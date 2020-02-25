@@ -4,6 +4,8 @@ import json
 import re
 import os
 import nltk
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 with open('adulting_tweets.json') as f:
     tweets = json.load(f)
@@ -44,7 +46,29 @@ for tweet in tweets:
 
 text_filt = [word for word in text if word not in nltk.corpus.stopwords.words('english')]
 
+# word frequency analysis
+nltk.FreqDist(text_filt).most_common(25)
 
+word_freq = pd.DataFrame(nltk.FreqDist(text_filt).most_common(25), columns=['word', 'frequency'])
+
+plt.figure(figsize=(8, 5))
+sns.set_style('white')
+ax = sns.barplot(x = 'word', y = 'frequency', data = word_freq, color = 'lightblue')
+ax.set_xticklabels(ax.get_xticklabels(), rotation = 90)
+sns.despine()
+sns.set(font_scale=2)
+
+#collocations
+
+bigram_measures = nltk.collocations.BigramAssocMeasures()
+finder = nltk.collocations.BigramCollocationFinder.from_words(text)
+finder.apply_freq_filter(3)
+finder.nbest(bigram_measures.pmi, 20)
+
+trigram_measures = nltk.collocations.TrigramAssocMeasures()
+finder = nltk.collocations.TrigramCollocationFinder.from_words(text)
+finder.apply_freq_filter(3)
+finder.nbest(trigram_measures.pmi, 20)
 
 # find all emojis
 for tweet in tweets:
