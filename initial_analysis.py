@@ -59,6 +59,8 @@ sns.despine()
 sns.set(font_scale=2)
 
 #collocations
+## need to change to use individual tweets instead of combined
+## don't want bigrams with last word of one tweet and first word of next tweet
 
 bigram_measures = nltk.collocations.BigramAssocMeasures()
 finder = nltk.collocations.BigramCollocationFinder.from_words(text)
